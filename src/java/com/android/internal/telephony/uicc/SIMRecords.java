@@ -32,6 +32,7 @@ import com.android.internal.telephony.SubscriptionController;
 import com.android.internal.telephony.gsm.SimTlv;
 import com.android.internal.telephony.uicc.IccCardApplicationStatus.AppState;
 import com.android.internal.telephony.uicc.IccCardApplicationStatus.AppType;
+import com.android.internal.telephony.uicc.UICCConfig;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -247,6 +248,11 @@ public class SIMRecords extends IccRecords {
         mTelephonyManager.setSimOperatorNumericForPhone(mParentApp.getPhoneId(), "");
         mTelephonyManager.setSimOperatorNameForPhone(mParentApp.getPhoneId(), "");
         mTelephonyManager.setSimCountryIsoForPhone(mParentApp.getPhoneId(), "");
+        setSystemProperty(PROPERTY_ICC_OPERATOR_NUMERIC, null);
+        setSystemProperty(PROPERTY_ICC_OPERATOR_ALPHA, null);
+        setSystemProperty(PROPERTY_ICC_OPERATOR_ISO_COUNTRY, null);
+        mParentApp.getUICCConfig().setImsi(mImsi);
+        mParentApp.getUICCConfig().setMncLength(mMncLength);
 
         // recordsRequested is set to false indicating that the SIM
         // read requests made so far are not valid. This is set to
@@ -684,6 +690,14 @@ public class SIMRecords extends IccRecords {
                     }
                 }
 
+                mParentApp.getUICCConfig().setImsi(mImsi);
+                if (mMncLength == UNKNOWN || mMncLength == UNINITIALIZED) {
+                    // We need to default to something that seems common
+                    mParentApp.getUICCConfig().setMncLength(3);
+                } else {
+                    mParentApp.getUICCConfig().setMncLength(mMncLength);
+                }
+
                 if (mMncLength != UNKNOWN && mMncLength != UNINITIALIZED) {
                     log("update mccmnc=" + mImsi.substring(0, 3 + mMncLength));
                     // finally have both the imsi and the mncLength and can parse the imsi properly
@@ -908,7 +922,10 @@ public class SIMRecords extends IccRecords {
                     } else if (mMncLength != 2 && mMncLength != 3) {
                         mMncLength = UNINITIALIZED;
                         log("setting5 mMncLength=" + mMncLength);
+                    } else {
+                        mParentApp.getUICCConfig().setMncLength(mMncLength);
                     }
+
                 } finally {
                     if (((mMncLength == UNINITIALIZED) || (mMncLength == UNKNOWN) ||
                             (mMncLength == 2)) && ((mImsi != null) && (mImsi.length() >= 6))) {
