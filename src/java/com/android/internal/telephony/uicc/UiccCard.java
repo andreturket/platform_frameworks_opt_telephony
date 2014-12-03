@@ -84,7 +84,7 @@ public class UiccCard {
     private RadioState mLastRadioState =  RadioState.RADIO_UNAVAILABLE;
     private UiccCarrierPrivilegeRules mCarrierPrivilegeRules;
     private boolean m3GPPAppActivated, m3GPP2AppActivated;
-
+    private UICCConfig mUICCConfig = null;
     private RegistrantList mAbsentRegistrants = new RegistrantList();
     private RegistrantList mCarrierPrivilegeRegistrants = new RegistrantList();
 
@@ -684,6 +684,18 @@ public class UiccCard {
     }
     public UICCConfig getUICCConfig() {
         return mUICCConfig;
+<<<<<<< HEAD
+=======
+    }
+
+    void onRefresh(IccRefreshResponse refreshResponse){
+        for ( int i = 0; i < mUiccApplications.length; i++) {
+            if (mUiccApplications[i] != null) {
+                // Let the app know that the refresh occurred
+                mUiccApplications[i].onRefresh(refreshResponse);
+            }
+        }
+>>>>>>> d10be37... Store correct IMSI when retreived from SIMRecords and use it for RuimRecords
     }
 
     private void log(String msg) {

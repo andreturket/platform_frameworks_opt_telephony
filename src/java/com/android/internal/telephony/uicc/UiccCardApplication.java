@@ -34,6 +34,7 @@ import com.android.internal.telephony.uicc.IccCardStatus.PinState;
 import com.android.internal.telephony.SubscriptionController;
 import com.android.internal.telephony.uicc.UICCConfig;
 
+import com.android.internal.telephony.uicc.UICCConfig;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
