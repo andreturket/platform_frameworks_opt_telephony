@@ -1072,6 +1072,8 @@ public abstract class PhoneBase extends Handler implements Phone {
                 response.sendToTarget();
             }
         }
+
+        updateSavedNetworkOperator(nsm);
     }
 
     @Override
